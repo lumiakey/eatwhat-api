@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd"
+       default-lazy-init="false">
+
+    <bean id="load_FoodListToRedisFromDB" class="com.what2e.eatwhat.service.impl.LoadToRedisServiceImpl"/>
+
+    <!-- 定义生成工作对象的工厂，并为工厂设定目标对象targetObject属性、目标对象的工作方法targetMethod属性 -->
+    <bean id="loadFoodList" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject"> <ref bean="load_FoodListToRedisFromDB"/> </property>
+        <property name="targetMethod"> <value>loadJob</value> </property>
+    </bean>
+
+    <bean id="updateBuyCount" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject"> <ref bean="load_FoodListToRedisFromDB"/> </property>
+        <property name="targetMethod"> <value>updateBuyCountJob</value> </property>
+    </bean>
+
+    <!--每天00:00:01 -->
+    <!-- 触发器：定义触发器执行的脚本的时间 -->
+    <bean id="every_day" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail" ref="loadFoodList"/>
+        <property name="cronExpression">
+            <value>1 0 0 * * ?</value>
+        </property>
+    </bean>
+
+    <!--每5s -->
+    <!-- 触发器：定义触发器执行的脚本的时间 -->
+    <bean id="test" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail" ref="loadFoodList"/>
+        <property name="cronExpression">
+            <value>0/5 * * * * ?</value>
+        </property>
+    </bean>
+
+
+    <bean id="1min_updateBuyCount" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail" ref="updateBuyCount"/>
+        <property name="cronExpression">
+            <value>0/60 * * * * ?</value>
+        </property>
+    </bean>
+
+    <!-- 配置项目启动后任务就执行一次 -->
+    <bean id="startup_run" class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">
+        <property name="jobDetail" ref="loadFoodList"/>
+        <property name="startDelay" value="500"/>
+        <property name="repeatInterval" value="0"/>
+        <property name="repeatCount" value="0"/>
+    </bean>
+
+    <!-- 总管理类,启动触发器的配置, 如果将lazy-init='false'那么容器启动就会执行调度程序 -->
+    <bean id="startQuertz" lazy-init='false' autowire="no" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="triggers">
+            <list>
+                <ref bean="every_day"/>
+                <ref bean="startup_run"/>
+                <ref bean="1min_updateBuyCount"/>
+            </list>
+        </property>
+    </bean>
+
+</beans>
