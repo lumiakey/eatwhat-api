@@ -13,7 +13,7 @@ public class Order {
 
     private String orderPrice;
 
-    private Integer addressId;
+    private String address;
 
     private Date createTime;
 
@@ -59,12 +59,12 @@ public class Order {
         this.orderPrice = orderPrice == null ? null : orderPrice.trim();
     }
 
-    public Integer getAddressId() {
-        return addressId;
+    public String getAddress() {
+        return address;
     }
 
-    public void setAddressId(Integer addressId) {
-        this.addressId = addressId;
+    public void setAddress(String address) {
+        this.address = address == null ? null : address.trim();
     }
 
     public Date getCreateTime() {

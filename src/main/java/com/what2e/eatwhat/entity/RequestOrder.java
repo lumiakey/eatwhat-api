@@ -14,7 +14,7 @@ public class RequestOrder {
     Integer userId;
     String orderRemarks;
     String orderPrice;
-    Integer addressId;
+    String address;
     String createTime;
     ArrayList<RequestOrderDesc> orderDesc;
 
@@ -42,12 +42,12 @@ public class RequestOrder {
         this.orderPrice = orderPrice;
     }
 
-    public Integer getAddressId() {
-        return addressId;
+    public String getAddress() {
+        return address;
     }
 
-    public void setAddressId(Integer addressId) {
-        this.addressId = addressId;
+    public void setAddressId(String address) {
+        this.address = address;
     }
 
     public String getCreateTime() {

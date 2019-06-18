@@ -1,12 +1,10 @@
 package com.what2e.eatwhat.util;
 
-import com.what2e.eatwhat.dao.OrderMapper;
+import com.what2e.eatwhat.dao.OrderMapper1;
 import com.what2e.eatwhat.entity.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.xml.crypto.Data;
 import java.text.ParseException;
-import java.util.Date;
 
 /**
  * @author lumike
@@ -17,12 +15,12 @@ import java.util.Date;
  **/
 public class Test {
     @Autowired
-    static OrderMapper orderMapper;
+    static OrderMapper1 orderMapper;
 
     public static void main(String[] args) {
         Order order = new Order();
         order.setuId(1);
-        order.setAddressId(1);
+        order.setAddress("");
         try {
             order.setCreateTime(DateUtils.dateParse("2019-05-10 09:00:01", DateUtils.HOUR_PATTERN));
         } catch (ParseException e) {

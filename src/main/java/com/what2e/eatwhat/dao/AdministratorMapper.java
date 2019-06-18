@@ -21,6 +21,8 @@ public interface AdministratorMapper {
 
     Administrator selectByPrimaryKey(Integer adminId);
 
+    Administrator selectByPhonenumber(String phonenumber);
+
     int updateByExampleSelective(@Param("record") Administrator record, @Param("example") AdministratorExample example);
 
     int updateByExample(@Param("record") Administrator record, @Param("example") AdministratorExample example);

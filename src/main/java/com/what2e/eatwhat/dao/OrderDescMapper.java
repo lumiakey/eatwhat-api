@@ -2,6 +2,8 @@ package com.what2e.eatwhat.dao;
 
 import com.what2e.eatwhat.entity.OrderDesc;
 import com.what2e.eatwhat.entity.OrderDescExample;
+
+import java.util.ArrayList;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
@@ -17,6 +19,8 @@ public interface OrderDescMapper {
     int insertSelective(OrderDesc record);
 
     List<OrderDesc> selectByExample(OrderDescExample example);
+
+    ArrayList<OrderDesc> selectByOrderId(Integer orderId);
 
     OrderDesc selectByPrimaryKey(Integer orderDescId);
 

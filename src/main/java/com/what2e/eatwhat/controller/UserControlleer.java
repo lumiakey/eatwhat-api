@@ -36,7 +36,7 @@ public class UserControlleer {
     UserService userService;
 
     @Autowired
-    LoginService loginService;
+    LoginService<User> loginService;
 
     ResponseResult responseResult;
 
@@ -45,7 +45,7 @@ public class UserControlleer {
     @RequestMapping(value = "/login")
     @ResponseBody
     public String login(HttpServletRequest request, HttpServletResponse response, String phonenumber, String password) {
-        logger.info("loginController init" + phonenumber + password);
+        logger.info("UserController login" + phonenumber + password);
         String retString;
         User user = new User();
         Result loginSatatus = new Result(100, "账户验证不通过");
@@ -54,7 +54,7 @@ public class UserControlleer {
         } else if (StringUtils.isEmpty(password)) {
             logger.info("password null");
         } else {
-            User userInfo = this.getUserInfo(phonenumber);
+            User userInfo = this.getUserInfoByPhone(phonenumber);
             if (userInfo != null) {
                 if (userInfo.getValidity().equals("YES") && loginService.checkPassWord(userInfo, password)) {
                     loginSatatus.setStatusCode(200);
@@ -66,19 +66,36 @@ public class UserControlleer {
         return gson.toJson(responseResult);
     }
 
+    @RequestMapping(value = "/register")
+    @ResponseBody
+    public String register(HttpServletRequest request, HttpServletResponse response, String phonenumber, String password) {
+        logger.info("UserController regist" + phonenumber + password);
+        /**
+         * 生成了动态验证码之后将手机号和动态验证码绑定在服务器
+         * 在提交注册的时候校验手机号和动态验证码是否是绑定
+         */
+        return null;
+    }
+
+
     @RequestMapping(value = "/getUserInfo")
     @ResponseBody
-    public String getUserInfo(HttpServletRequest request, HttpServletResponse response, String phonenumber, String password) {
-        User userInfo = this.getUserInfo(phonenumber);
-        if (userInfo != null) {
-            if (loginService.checkPassWord(userInfo, password)) {
-                responseResult = new ResponseResult("获取用户信息成功", userInfo);
-            }
+    public String getUserInfo(HttpServletRequest request, HttpServletResponse response, String phonenumber, String token) {
+        logger.info("getUserInfo:" + phonenumber +" " + token);
+        if (token == null || token.equals("") || phonenumber == null ) {
+            responseResult = new ResponseResult();
+        }
+        Integer userIdByToken = JWTUtil.getUserIdByToken(token);
+        User userInfo = this.getUserInfoByPhone(phonenumber);
+        if (userIdByToken != null && userIdByToken == userInfo.getuId()){
+            responseResult = new ResponseResult("获取用户信息成功", userInfo);
+        }else {
+            responseResult = new ResponseResult("1002", "用户认证失败", null);
         }
         return gson.toJson(responseResult);
     }
 
-    public User getUserInfo(String phonenumber) {
+    public User getUserInfoByPhone(String phonenumber) {
         User user = new User();
         user.setPhonenumber(phonenumber);
         User userInfo = userService.getByUser(user);

@@ -94,6 +94,14 @@
     from administrator
     where admin_id = #{adminId,jdbcType=INTEGER}
   </select>
+
+  <select id="selectByPhonenumber" resultMap="BaseResultMap" parameterType="String" >
+    select
+    <include refid="Base_Column_List" />
+    from administrator
+    where phonenumber = #{phonenumber,jdbcType=VARCHAR}
+  </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from administrator
     where admin_id = #{adminId,jdbcType=INTEGER}

@@ -1,9 +1,8 @@
 package com.what2e.eatwhat.service.impl;
 
-import com.what2e.eatwhat.entity.Food;
-import com.what2e.eatwhat.entity.RedisFoodListKey;
-import com.what2e.eatwhat.entity.RedisFoodValue;
+import com.what2e.eatwhat.entity.*;
 import com.what2e.eatwhat.service.FoodListService;
+import com.what2e.eatwhat.service.InformationService;
 import com.what2e.eatwhat.service.LoadToRedisService;
 import com.what2e.eatwhat.service.RedisService;
 import com.what2e.eatwhat.util.DateUtils;
@@ -15,6 +14,7 @@ import org.springframework.stereotype.Service;
 import redis.clients.jedis.Jedis;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -37,6 +37,20 @@ public class LoadToRedisServiceImpl implements LoadToRedisService {
     @Autowired
     RedisService redisService;
 
+    @Autowired
+    InformationService informationService;
+
+    @Override
+    public void loadInformationListToRedisFromDB(String issueTime) {
+        logger.info("loadInfoToredisFromDB");
+        List<Information> informationList = new ArrayList<>();
+        if (issueTime != null && !issueTime.equals("")) {
+            informationList = informationService.getInformationListByIssueTime(issueTime);
+            String[] tem = issueTime.split(" ");
+            RedisInformationListKey redisInformationListKey = new RedisInformationListKey(tem[0]);
+            redisService.write(redisInformationListKey.getKey().getBytes(),SerializeUtil.serialize(informationList));
+        }
+    }
 
     @Override
     public void loadFoodListToRedisFromDB(String putTime) {
@@ -84,6 +98,9 @@ public class LoadToRedisServiceImpl implements LoadToRedisService {
             logger.info("Quartz : Select FoodList of "+putTime.toString());
             /*loadFoodListToRedisFromDB(putTime.toString());*/
             loadFoodListToRedisFromDB("2019-05-10 00:00:01");
+
+            loadFoodListToRedisFromDB("2019-05-19 00:00:01");
+            loadInformationListToRedisFromDB("2019-05-16 00:00:01");
         } catch (ParseException exception) {
             logger.info("quartz reLoadFoodListToRedisFromDB fail : dateFormat ParseException");
         }

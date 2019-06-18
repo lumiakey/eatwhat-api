@@ -60,7 +60,6 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
             <list>
                 <ref bean="every_day"/>
                 <ref bean="startup_run"/>
-                <ref bean="1min_updateBuyCount"/>
             </list>
         </property>
     </bean>

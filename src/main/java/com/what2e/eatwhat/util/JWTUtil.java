@@ -4,6 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.crypto.SecretKey;
@@ -41,10 +42,18 @@ public class JWTUtil {
 
     public static Integer getUserIdByToken(String token) {
         if (checkToken(token)) {
-            if (Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody().getSubject().equals("userToken")) {
-                Claims body = Jwts.parser().requireSubject("userToken").setSigningKey(key).parseClaimsJws(token).getBody();
-                return (Integer) body.get("id");
-            } else {
+            try {
+                if (Jwts.parser()
+                        .setSigningKey(key)
+                        .parseClaimsJws(token)
+                        .getBody().getSubject()
+                        .equals("userToken")) {
+                    Claims body = Jwts.parser().requireSubject("userToken").setSigningKey(key).parseClaimsJws(token).getBody();
+                    return (Integer) body.get("id");
+                } else {
+                    return null;
+                }
+            } catch (SignatureException e) {
                 return null;
             }
         } else {

@@ -184,7 +184,7 @@
 
 
     <build>
-        <finalName>shortlink</finalName>
+        <finalName>eatwhat-api</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

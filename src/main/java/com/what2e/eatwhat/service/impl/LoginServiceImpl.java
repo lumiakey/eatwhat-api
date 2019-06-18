@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
  * @Description 登录验证
  **/
 @Service
-public class LoginServiceImpl implements LoginService {
+public class LoginServiceImpl implements LoginService<User> {
     
     @Override
     public boolean checkPassWord(User userInfo, String password) {

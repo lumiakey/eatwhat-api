@@ -112,3 +112,30 @@ lint/tmp/
 # lint/reports/
 =======
 >>>>>>> 5c06bbbd6a2469d8343b48dcd40502f0272f6364
+.idea/artifacts/
+.idea/compiler.xml
+.idea/dataSources/
+.idea/encodings.xml
+.idea/misc.xml
+target/classes/generatorConfig.xml
+target/classes/jdbc.properties
+target/classes/mapper/
+target/classes/spring-mvc.xml
+target/classes/spring-mybatis.xml
+target/classes/spring-quartz.xml
+target/classes/sql
+target/eatwhat-api.war
+target/eatwhat-api/META-INF/
+target/eatwhat-api/WEB-INF/classes/generatorConfig.xml
+target/eatwhat-api/WEB-INF/classes/jdbc.properties
+target/eatwhat-api/WEB-INF/classes/mapper/
+target/eatwhat-api/WEB-INF/classes/spring-mvc.xml
+target/eatwhat-api/WEB-INF/classes/spring-mybatis.xml
+target/eatwhat-api/WEB-INF/classes/spring-quartz.xml
+target/eatwhat-api/WEB-INF/classes/sql
+target/eatwhat-api/WEB-INF/lib/
+target/eatwhat-api/WEB-INF/web.xml
+target/eatwhat-api/index.jsp
+target/generated-sources/
+target/maven-archiver/
+target/maven-status/

@@ -3,6 +3,7 @@ package com.what2e.eatwhat.controller;
 import com.google.gson.Gson;
 import com.what2e.eatwhat.entity.*;
 import com.what2e.eatwhat.service.*;
+import com.what2e.eatwhat.util.DateUtils;
 import com.what2e.eatwhat.util.JWTUtil;
 import com.what2e.eatwhat.util.SerializeUtil;
 import org.slf4j.Logger;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
@@ -25,13 +27,16 @@ import java.util.concurrent.locks.ReentrantLock;
  * @Description 订单相关controller
  **/
 @Controller
-@RequestMapping(value = "/order")
+@RequestMapping(value = "/order",produces = {"text/html;charset=UTF-8;", "application/json;charset=UTF-8;"})
 public class OrderController {
 
     private final static Logger logger = LoggerFactory.getLogger(OrderController.class);
 
     @Autowired
     OrderService orderService;
+
+    @Autowired
+    OrderDescService orderDescService;
 
     @Autowired
     RedisService redisService;
@@ -43,16 +48,77 @@ public class OrderController {
     BlacklistService blacklistService;
 
     @Autowired
-    OrderDescService orderDescService;
+    AddressService addressService;
 
     ResponseResult responseResult;
 
     Gson gson = new Gson();
 
-    @RequestMapping(value = "/getOrderByPhonenumber", produces = {"text/html;charset=UTF-8;", "application/json;charset=UTF-8;"})
+    @RequestMapping(value = "/getOrderList")
     @ResponseBody
-    public String getOrderByPhonenumber(HttpServletRequest request, HttpServletResponse response, String phonenumber) {
-        return "";
+    public String getOrderByUserId(HttpServletRequest request, HttpServletResponse response, Integer userId ,String token) {
+        logger.info("getOrderByUserId : userId:" + userId +" token:" +token);
+        Integer userIdByToken = JWTUtil.getUserIdByToken(token);
+        if (userIdByToken != null && userIdByToken == userId) {
+            ArrayList<Order> orderArrayList = orderService.getOrderByUserId(userId);
+            ArrayList<ResponseOrder> responseOrderArrayList = new ArrayList<>();
+            for (Order order : orderArrayList) {
+                ResponseOrder responseOrder = new ResponseOrder();
+                responseOrder.setOderId(order.getOrderId());
+                responseOrder.setOrderType(order.getOrderTypeId());
+                responseOrder.setAddress(order.getAddress());
+                responseOrder.setCreateTime(order.getCreateTime());
+                responseOrder.setOrderPrice(order.getOrderPrice());
+                responseOrder.setOrderRemarks(order.getOrderRemarks());
+                responseOrder.setOrderDesc(orderDescService.getOrderDescByOrderId(order.getOrderId()));
+                responseOrderArrayList.add(responseOrder);
+            }
+            responseResult = new ResponseResult("请求成功",responseOrderArrayList);
+        }else {
+            responseResult = new ResponseResult("1002", "用户认证失败", null);
+        }
+        return gson.toJson(responseResult);
+    }
+
+    @RequestMapping(value = "/payment")
+    @ResponseBody
+    public String payment(HttpServletRequest request, HttpServletResponse response, Integer paymentType, Integer orderId , String token) {
+        logger.info("payment : orderId:" + orderId +" token:" +token);
+        Integer userIdByToken = JWTUtil.getUserIdByToken(token);
+        if (userIdByToken != null && orderId != null) {
+            Order order = orderService.getOrderByOrderId(orderId);
+            if (order !=null && order.getuId() == userIdByToken) {
+                order.setOrderTypeId(2);
+                orderService.paymentOrder(order);
+                Result result = new Result(100, "付款成功");
+                responseResult = new ResponseResult("1000","请求成功", result);
+            } else {
+                responseResult = new ResponseResult("1002", "用户认证失败", null);
+            }
+        }else {
+            responseResult = new ResponseResult("1002", "用户认证失败", null);
+        }
+        return gson.toJson(responseResult);
+    }
+
+    @RequestMapping(value = "/cancel")
+    @ResponseBody
+    public String cancel(HttpServletRequest request, HttpServletResponse response, Integer orderId , String token) {
+        logger.info("cancel : orderId:" + orderId +" token:" +token);
+        Integer userIdByToken = JWTUtil.getUserIdByToken(token);
+        if (userIdByToken != null && orderId != null) {
+            Order order = orderService.getOrderByOrderId(orderId);
+            if (order.getuId() == userIdByToken) {
+                orderService.cancelOrder(orderId);
+                Result result = new Result(100, "取消订单成功");
+                responseResult = new ResponseResult("1000", "请求成功", result);
+            } else {
+                responseResult = new ResponseResult("1002", "用户认证失败", null);
+            }
+        } else {
+            responseResult = new ResponseResult("1002", "用户认证失败", null);
+        }
+        return gson.toJson(responseResult);
     }
 
     @RequestMapping(value = "/submitOrders")
@@ -112,7 +178,8 @@ public class OrderController {
         }
         if (flag) {
             //降级 直接MySQL入库
-            if (orderService.submitOrder(newOrder)) {
+            Integer orderId = orderService.submitOrder(newOrder);
+            if (orderId != null) {
                 //修改redis总量
                 for (RequestOrderDesc orderDesc : orderDescArrayList) {
                     lock.lock();
@@ -131,7 +198,7 @@ public class OrderController {
                     }
                     lock.unlock();
                 }
-                Result submitResult = new Result(200, "订单入库成功");
+                Result submitResult = new Result(200,""+orderId);
                 responseResult = new ResponseResult("提交成功", submitResult);
             } else {
                 //资格回滚

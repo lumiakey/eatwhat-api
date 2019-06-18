@@ -6,7 +6,7 @@
 
 <generatorConfiguration>
     <!--数据库驱动jar -->
-    <classPathEntry location="/home/lumia/.m2/repository/mysql/mysql-connector-java/5.1.35/mysql-connector-java-5.1.35.jar"/>
+    <classPathEntry location="/Users/yaoyan/.m2/repository/mysql/mysql-connector-java/8.0.11/mysql-connector-java-8.0.11.jar"/>
 
     <context id="mysqlTables" targetRuntime="MyBatis3">
         <!--去除注释  -->
@@ -45,7 +45,7 @@
 
         <!-- 对应的Mapper接口类文件 -->
         <javaClientGenerator type="XMLMAPPER" targetPackage="com.what2e.eatwhat.dao"
-                             targetProject="./src/main/java" >
+                             targetProject="./src/main/java/" >
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>
 
@@ -53,6 +53,7 @@
 
         <!--<table tableName="t_dl_media_table_column"  domainObjectName="MediaTableColumnInfo"></table>-->
        <!-- <table tableName="address" domainObjectName="Address"></table>-->
+<!--        <table tableName="order" domainObjectName="Order"></table>-->
         <table tableName="order" domainObjectName="Order"></table>
         <!--<table tableName="group_user" domainObjectName="GroupUser"></table>-->
        <!-- <table tableName="food" domainObjectName="Food"></table>-->

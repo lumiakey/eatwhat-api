@@ -1,6 +1,7 @@
 package com.what2e.eatwhat.service.impl;
 
 import com.what2e.eatwhat.dao.OrderMapper;
+import com.what2e.eatwhat.dao.OrderMapper1;
 import com.what2e.eatwhat.entity.*;
 import com.what2e.eatwhat.service.OrderDescService;
 import com.what2e.eatwhat.service.OrderService;
@@ -32,6 +33,22 @@ public class OrderServiceImpl implements OrderService {
     OrderMapper orderMapper;
 
     @Override
+    public ArrayList<Order> getOrderByUserId(Integer userId){
+        if (userId != null) {
+            return orderMapper.selectByUserId(userId);
+        }
+        return null;
+    }
+
+    @Override
+    public Order getOrderByOrderId(Integer orderId) {
+        if (orderId != null) {
+            return orderMapper.selectByPrimaryKey(orderId);
+        }
+        return null;
+    }
+
+    @Override
     public Order getOrderByPhonenumber(String phonenumber) {
         Order order = new Order();
         if (phonenumber != null && phonenumber != "") {
@@ -56,11 +73,11 @@ public class OrderServiceImpl implements OrderService {
      * @return
      */
     @Override
-    public boolean submitOrder(RequestOrder requestOrder) {
+    public Integer submitOrder(RequestOrder requestOrder) {
         boolean flag = true;
         Order order = new Order();
         order.setuId(requestOrder.getUserId());
-        order.setAddressId(requestOrder.getAddressId());
+        order.setAddress(requestOrder.getAddress());
         try {
             order.setCreateTime(DateUtils.dateParse(requestOrder.getCreateTime(), DateUtils.HOUR_PATTERN));
         } catch (ParseException e) {
@@ -78,15 +95,10 @@ public class OrderServiceImpl implements OrderService {
                 orderDesc.setFoodName(requestOrderDesc.getFoodName());
                 orderDesc.setOrderAmount(requestOrderDesc.getOrderAmount());
                 orderDesc.setFoodPrice(requestOrderDesc.getFoodPrice());
-                Integer orderDescId = orderDescService.submitOrderDesc(orderDesc);
-                if (orderDescId == null) {
-                    flag = false;
-                }
+                orderDescService.submitOrderDesc(orderDesc);
             }
-        } else {
-            flag = false;
         }
-        return flag;
+        return orderId;
     }
 
     @Override

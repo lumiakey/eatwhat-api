@@ -4,4 +4,6 @@ import com.what2e.eatwhat.entity.User;
 
 public interface UserService {
     User getByUser(User user);
+
+    User getUserByUid(Integer userId);
 }

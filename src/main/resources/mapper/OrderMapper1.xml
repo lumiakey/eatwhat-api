@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.what2e.eatwhat.dao.OrderMapper" >
+<mapper namespace="com.what2e.eatwhat.dao.OrderMapper1" >
   <resultMap id="BaseResultMap" type="com.what2e.eatwhat.entity.Order" >
     <id column="order_id" property="orderId" jdbcType="INTEGER" />
     <result column="u_id" property="uId" jdbcType="INTEGER" />
@@ -79,7 +79,7 @@
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from order
+    from `order`
     <if test="_parameter != null" >
       <include refid="Example_Where_Clause" />
     </if>
@@ -90,15 +90,23 @@
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
-    from order
+    from `order`
     where order_id = #{orderId,jdbcType=INTEGER}
   </select>
+
+  <select id="selectByUserId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    from `order`
+    where u_id = #{u_id,jdbcType=INTEGER}
+  </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
-    delete from order
+    delete from `order`
     where order_id = #{orderId,jdbcType=INTEGER}
   </delete>
   <delete id="deleteByExample" parameterType="com.what2e.eatwhat.entity.OrderExample" >
-    delete from order
+    delete from `order`
     <if test="_parameter != null" >
       <include refid="Example_Where_Clause" />
     </if>
@@ -118,7 +126,7 @@
     #{addressId,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.what2e.eatwhat.entity.Order" >
-    insert into order
+    insert into `order`
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="orderId != null" >
         order_id,
@@ -173,13 +181,13 @@
     </trim>
   </insert>
   <select id="countByExample" parameterType="com.what2e.eatwhat.entity.OrderExample" resultType="java.lang.Integer" >
-    select count(*) from order
+    select count(*) from `order`
     <if test="_parameter != null" >
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map" >
-    update order
+    update `order`
     <set >
       <if test="record.orderId != null" >
         order_id = #{record.orderId,jdbcType=INTEGER},
@@ -211,7 +219,7 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map" >
-    update order
+    update `order`
     set order_id = #{record.orderId,jdbcType=INTEGER},
       u_id = #{record.uId,jdbcType=INTEGER},
       order_type_id = #{record.orderTypeId,jdbcType=INTEGER},
@@ -225,7 +233,7 @@
     </if>
   </update>
   <update id="updateByPrimaryKeySelective" parameterType="com.what2e.eatwhat.entity.Order" >
-    update order
+    update `order`
     <set >
       <if test="uId != null" >
         u_id = #{uId,jdbcType=INTEGER},
@@ -252,7 +260,7 @@
     where order_id = #{orderId,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.what2e.eatwhat.entity.Order" >
-    update order
+    update `order`
     set u_id = #{uId,jdbcType=INTEGER},
       order_type_id = #{orderTypeId,jdbcType=INTEGER},
       order_remarks = #{orderRemarks,jdbcType=VARCHAR},

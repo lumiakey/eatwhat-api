@@ -29,7 +29,7 @@ public class ResponseResult {
 
     public ResponseResult() {
         this.success = "1";
-        this.code = "1002";
+        this.code = "1001";
         this.msg = "";
         this.result = null;
     }

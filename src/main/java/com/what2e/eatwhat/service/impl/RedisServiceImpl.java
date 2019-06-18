@@ -13,7 +13,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.JedisPoolConfig;
+import redis.clients.jedis.ShardedJedisPool;
+import redis.clients.jedis.exceptions.JedisConnectionException;
 
+import java.net.SocketException;
 import java.util.ArrayList;
 
 /**
@@ -35,7 +40,15 @@ public class RedisServiceImpl implements RedisService {
 
     ArrayList<FoodJson> foods;
 
-    static Jedis jedis = new Jedis("localhost");
+    final static JedisPool jedisPool;
+
+    static {
+        JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
+        jedisPoolConfig.setMaxTotal(500);
+        jedisPoolConfig.setMaxIdle(8);
+        jedisPoolConfig.setMaxWaitMillis(-1);
+        jedisPool = new JedisPool(jedisPoolConfig,"localhost");
+    }
 
     @Override
     public ArrayList<FoodJson> readFoodListOfOneDay(String putTime, String locationCode) {
@@ -76,7 +89,17 @@ public class RedisServiceImpl implements RedisService {
 
     @Override
     public Food readFoodByRedisFoodListKey(RedisFoodListKey key) {
-        byte[] foodByte = jedis.get(key.getKey().getBytes());
+        Jedis jedis = jedisPool.getResource();
+        byte[] foodByte;
+        try {
+            foodByte = jedis.get(key.getKey().getBytes());
+        } catch (JedisConnectionException e) {
+            foodByte = null;
+        }finally {
+            if (jedis != null) {
+                jedis.close();
+            }
+        }
         Food food = byteToFood(foodByte);
         return food;
     }
@@ -84,16 +107,27 @@ public class RedisServiceImpl implements RedisService {
 
     @Override
     public byte[] read(byte[] key) {
-        if (key != null) {
-            return jedis.get(key);
+        Jedis jedis = jedisPool.getResource();
+        try {
+            if (key != null) {
+                return jedis.get(key);
+            }
+        } catch (JedisConnectionException e) {
+            return null;
+        }finally {
+            if (jedis != null) {
+                jedis.close();
+            }
         }
         return null;
     }
 
     @Override
     public void write(byte[] key, byte[] value) {
+        Jedis jedis = jedisPool.getResource();
         if (key != null) {
             jedis.set(key, value);
+            jedis.close();
         }
     }
 
@@ -111,7 +145,7 @@ public class RedisServiceImpl implements RedisService {
      * @return
      */
     public FoodJson foodToFoodJson(Food food) {
-        if (food == null || food.equals(" ")) {
+        if (food == null || food.equals("")) {
             return null;
         }
         FoodJson foodJson = new FoodJson();

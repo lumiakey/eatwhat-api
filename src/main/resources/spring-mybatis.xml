@@ -17,7 +17,7 @@
     <context:property-placeholder location="classpath:jdbc.properties"/>
 
     <!-- 数据库连接池 -->
-    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+    <bean id="eatwhat" class="com.mchange.v2.c3p0.ComboPooledDataSource">
         <property name="driverClass" value="${jdbc.driver}"/>
         <property name="jdbcUrl" value="${jdbc.url}"/>
         <property name="user" value="${jdbc.username}"/>
@@ -32,7 +32,7 @@
     <!-- 配置SqlSessionFactory对象 -->
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
         <!-- 注入数据库连接池 -->
-        <property name="dataSource" ref="dataSource"/>
+        <property name="dataSource" ref="eatwhat"/>
         <!-- 扫描model包 使用别名 -->
         <property name="typeAliasesPackage" value="com.what2e.eatwhat.entity"/>
         <!-- 扫描sql配置文件:mapper需要的xml文件 -->
@@ -50,7 +50,7 @@
     <!-- 配置事务管理器 -->
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <!-- 注入数据库连接池 -->
-        <property name="dataSource" ref="dataSource"/>
+        <property name="dataSource" ref="eatwhat"/>
     </bean>
 
     <!-- 配置基于注解的声明式事务 -->
