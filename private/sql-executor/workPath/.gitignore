@@ -1,0 +1,12 @@
+.idea
+.settings/
+build/
+bin/
+.project
+.classpath
+tmp/
+.gradle
+gradlew.bat
+local.properties
+*.iml
+*.md
