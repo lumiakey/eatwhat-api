@@ -1,0 +1,345 @@
+CREATE DATABASE eatwhat;
+use eatwhat;
+SHOW TABLES;
+CREATE TABLE `user`
+(
+  u_id        INT AUTO_INCREMENT,
+  u_name      VARCHAR(20) NOT NULL DEFAULT '' COMMENT '用户名称',
+  phonenumber VARCHAR(20) NOT NULL DEFAULT '' COMMENT '手机号码 and 登录名',
+  u_picture   VARCHAR(20) NOT NULL DEFAULT '' COMMENT '头像URL',
+  password    VARCHAR(20) NOT NULL DEFAULT '' COMMENT '密码',
+  sex         VARCHAR(4)  NOT NULL DEFAULT '' COMMENT '性别',
+  validity    VARCHAR(10) NOT NULL DEFAULT 'YES' COMMENT '是否有效 YES表示有效 NO表示失效',
+  create_time DATETIME    NOT NULL DEFAULT NOW() COMMENT '创建日期',
+  update_time DATETIME    NOT NULL DEFAULT NOW() COMMENT '更新日期',
+  PRIMARY KEY (`u_id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8 COMMENT '用户表';
+SELECT *
+from user;
+
+DESC user;
+DROP TABLE user;
+
+CREATE TABLE `address`
+(
+  address_id   INT AUTO_INCREMENT,
+  u_id         INT          NOT NULL COMMENT '该地址对应的用户',
+  address_desc VARCHAR(255) NOT NULL DEFAULT "" COMMENT '详细收货地址',
+  PRIMARY KEY (`address_id`)
+) ENGINE = InnoDb
+  DEFAULT CHARSET = utf8 COMMENT '地址表';
+
+
+
+INSERT INTO `user` (u_name, phonenumber, u_picture, password, sex, validity)
+VALUES ('严瑶', '15546699882', '', 'adminadmin', '男', 'YES');
+
+SELECT *
+FROM user;
+
+DROP TABLE eatwhat.user;
+
+CREATE TABLE `order`
+(
+  order_id      INT AUTO_INCREMENT,
+  u_id          INT         NOT NULL COMMENT '用户id',
+  order_type_id INT         NOT NULL DEFAULT 1 COMMENT '订单类型id',
+  order_remarks VARCHAR(255) COMMENT '订单备注信息',
+  order_price   VARCHAR(20) NOT NULL COMMENT '订单总价',
+  address_id    INT         NOT NULL COMMENT '订单收货地址',
+  create_time   DATETIME    NOT NULL DEFAULT now() COMMENT '创建日期',
+  update_time   DATETIME    NOT NULL DEFAULT now() COMMENT '更新日期',
+  PRIMARY KEY (`order_id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8 COMMENT '订单表';
+DESC `order`;
+use eatwhat;
+DROP TABLE eatwhat.order;
+
+select * from `order`;
+delete FROM `order` WHERE `order`.order_id=2;
+insert into `order` (u_id,order_remarks, order_price, address_id, create_time)
+values (
+        1,
+        '订单备注',
+        '16',
+        1,
+        '2019-05-10 00:00:01.0');
+
+CREATE TABLE `order_desc`
+(
+  order_desc_id INT AUTO_INCREMENT,
+  order_id      INT         NOT NULL COMMENT '订单id',
+  food_id       INT         NOT NULL COMMENT '食品id',
+  food_name     VARCHAR(20) NOT NULL COMMENT '食品名称',
+  food_price    VARCHAR(20) NOT NULL COMMENT '食品价格',
+  order_amount  INT         NOT NULL COMMENT '订购数量',
+  PRIMARY KEY (`order_desc_id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8 COMMENT '订单详情表';
+DESC `order_desc`;
+
+select *
+from order_desc;
+
+CREATE TABLE `group`
+(
+  group_id   INT AUTO_INCREMENT,
+  group_name VARCHAR(20) NOT NULL COMMENT '团队名称',
+  PRIMARY KEY (`group_id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8 COMMENT '团队表';
+INSERT INTO `group` (group_name)
+VALUES ('EatWhat官方');
+SELECT *
+from `group`;
+
+CREATE TABLE `group_user`
+(
+  group_user_id INT AUTO_INCREMENT,
+  group_id      INT NOT NULL COMMENT '团队id',
+  u_id          INT NOT NULL COMMENT '用户id',
+  PRIMARY KEY (`group_user_id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8 COMMENT '团队用户表';
+INSERT INTO `group_user` (group_id, u_id)
+VALUES (1, 1);
+SELECT *
+from group_user;
+
+CREATE TABLE `blacklist`
+(
+  blacklist_id INT AUTO_INCREMENT,
+  u_id         INT      NOT NULL COMMENT '用户id',
+  create_time  DATETIME NOT NULL DEFAULT now() COMMENT '创建日期',
+  PRIMARY KEY (`blacklist_id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8 COMMENT '黑名单表';
+
+
+CREATE TABLE `order_type`
+(
+  order_type_id   INT AUTO_INCREMENT,
+  order_type_name VARCHAR(20) COMMENT '订单类型名称',
+  PRIMARY KEY (`order_type_id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8 COMMENT '订单类型表';
+
+DESC order_type;
+INSERT INTO `order_type` (order_type_name)
+VALUES ('待付款');
+INSERT INTO `order_type` (order_type_name)
+VALUES ('接单中');
+INSERT INTO `order_type` (order_type_name)
+VALUES ('烹饪中');
+INSERT INTO `order_type` (order_type_name)
+VALUES ('配送中');
+INSERT INTO `order_type` (order_type_name)
+VALUES ('待评论');
+INSERT INTO `order_type` (order_type_name)
+VALUES ('已完成');
+INSERT INTO `order_type` (order_type_name)
+VALUES ('已取消');
+SELECT *
+from order_type;
+
+CREATE TABLE `order_operation`
+(
+  order_operation_id INT AUTO_INCREMENT COMMENT '操作id',
+  order_type_id      INT         NOT NULL COMMENT '订单类型id',
+  oper               VARCHAR(20) NOT NULL DEFAULT '' COMMENT '操作',
+  PRIMARY KEY (`order_operation_id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8 COMMENT '订单操作表';
+DESC order_operation;
+SELECT *
+FROM order_operation;
+INSERT INTO `order_operation` (order_type_id, oper)
+VALUES (1, '取消');
+INSERT INTO `order_operation` (order_type_id, oper)
+VALUES (1, '付款');
+INSERT INTO `order_operation` (order_type_id, oper)
+VALUES (1, '分享');
+
+INSERT INTO `order_operation` (order_type_id, oper)
+VALUES (2, '取消');
+INSERT INTO `order_operation` (order_type_id, oper)
+VALUES (2, '催促');
+INSERT INTO `order_operation` (order_type_id, oper)
+VALUES (2, '分享');
+
+INSERT INTO `order_operation` (order_type_id, oper)
+VALUES (3, '查看');
+INSERT INTO `order_operation` (order_type_id, oper)
+VALUES (3, '催促');
+INSERT INTO `order_operation` (order_type_id, oper)
+VALUES (3, '分享');
+
+INSERT INTO `order_operation` (order_type_id, oper)
+VALUES (4, '查看');
+INSERT INTO `order_operation` (order_type_id, oper)
+VALUES (4, '催促');
+INSERT INTO `order_operation` (order_type_id, oper)
+VALUES (4, '分享');
+
+INSERT INTO `order_operation` (order_type_id, oper)
+VALUES (5, '售后');
+INSERT INTO `order_operation` (order_type_id, oper)
+VALUES (5, '点评');
+INSERT INTO `order_operation` (order_type_id, oper)
+VALUES (5, '分享');
+
+INSERT INTO `order_operation` (order_type_id, oper)
+VALUES (6, '售后');
+INSERT INTO `order_operation` (order_type_id, oper)
+VALUES (6, '客服');
+INSERT INTO `order_operation` (order_type_id, oper)
+VALUES (6, '分享');
+
+use eatwhat;
+
+CREATE TABLE `food`
+(
+  food_id         INT AUTO_INCREMENT,
+  food_name       VARCHAR(20)  NOT NULL DEFAULT '' COMMENT '菜品名称',
+  food_price      VARCHAR(20)  NOT NULL COMMENT '单价',
+  food_picture    VARCHAR(255) NOT NULL DEFAULT '' COMMENT '菜品图片',
+  inventory       INT          NOT NULL COMMENT '库存',
+  food_location   VARCHAR(20)  NOT NULL DEFAULT '' COMMENT '菜品的位置信息',
+  time_tips       VARCHAR(10)  NOT NULL DEFAULT '' COMMENT '时间提示 分为 早餐 中餐 晚餐',
+  food_desc       VARCHAR(255) NOT NULL DEFAULT '' COMMENT '菜品简介',
+  food_desc_url   VARCHAR(255) NOT NULL DEFAULT '' COMMENT '菜品简介URL',
+  food_state_flag INT          NOT NULL DEFAULT 0 COMMENT '菜品状态id 0入库 1上架 2下架 3售罄',
+  in_time         DATETIME     NOT NULL DEFAULT NOW() COMMENT '入库时间',
+  put_time        DATETIME COMMENT '上架时间',
+  down_time       DATETIME COMMENT '下架时间',
+  PRIMARY KEY (`food_id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8 COMMENT '食品表';
+DESC food;
+DROP TABLE food;
+
+INSERT INTO `food` (food_name, food_price, food_picture, inventory, food_location, time_tips, food_desc, put_time)
+VALUES ('农家小炒肉', '16', 'https://www.zuocai.tv/uploads/allimg/150917/1-15091G41F50-L.png', '20', '贵州贵阳', '晚餐',
+        '经典湘菜，无辣不欢', '2019-05-06 00:00:01');
+
+SELECT *
+FROM food
+WHERE put_time = '2019-05-10 00:00:01';
+
+DELETE
+FROM food
+WHERE food_id = 5;
+USE eatwhat;
+
+INSERT INTO `food` (food_name, food_price, food_picture, inventory, food_location, time_tips, food_desc, put_time)
+VALUES ('豆浆油条', '6.9', 'https://pic1.zhimg.com/v2-2f58a3a468eb3ec6573ab6af889f62bf_1200x500.jpg', '20', '贵州贵阳', '早餐',
+        '经典早餐', '2019-05-06 00:00:01');
+
+INSERT INTO `food` (food_name, food_price, food_picture, inventory, food_location, time_tips, food_desc, put_time)
+VALUES ('水煮肉片', '19.9', 'https://ali.xinshipu.cn/20120511/original/1336728009465.jpg', '20', '贵州贵阳', '午餐',
+        '经典川菜', '2019-05-06 00:00:01');
+
+UPDATE food
+SET food.put_time = '2019-05-10 00:00:01'
+WHERE food_id = '1';
+
+
+UPDATE food
+SET food.put_time = '2019-05-10 00:00:01'
+WHERE food_id = '2';
+
+
+UPDATE food
+SET food.put_time = '2019-05-10 00:00:01'
+WHERE food_id = '3';
+
+
+SELECT *
+FROM (SELECT food.*,DATE_FORMAT(put_time, '%Y-%m-%d') temp_time
+      FROM food
+      GROUP BY food.food_id) AS temp
+WHERE temp_time = "2019-05-05";
+
+
+
+use eatwhat;
+UPDATE `food`
+SET put_time='2019-05-06 00:00:01'
+WHERE food_id = '1';
+
+
+SELECT *
+FROM food
+WHERE put_time = "2019-05-05 23:57:29";
+
+
+CREATE TABLE `food_state`
+(
+  food_state_id   INT AUTO_INCREMENT,
+  food_state_flag INT COMMENT '菜品状态中文名称 0入库 1上架 2下架 3售罄',
+  food_state_name VARCHAR(20) COMMENT '菜品状态中文名称 有入库 上架 下架 售罄',
+  PRIMARY KEY (`food_state_id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8 COMMENT '菜品状态表';
+INSERT INTO `food_state` (food_state_flag, food_state_name)
+VALUES (0, '入库');
+INSERT INTO `food_state` (food_state_flag, food_state_name)
+VALUES (1, '上架');
+INSERT INTO `food_state` (food_state_flag, food_state_name)
+VALUES (2, '下架');
+INSERT INTO `food_state` (food_state_flag, food_state_name)
+VALUES (3, '售罄');
+SELECT *
+FROM food_state;
+DESC food_state;
+DROP TABLE food_state;
+
+
+CREATE TABLE `food_operation`
+(
+  food_operation_id INT AUTO_INCREMENT,
+  food_state_flag   INT         NOT NULL COMMENT '菜品状态id',
+  oper              VARCHAR(20) NOT NULL DEFAULT '' COMMENT '对菜品的操作名',
+  PRIMARY KEY (`food_operation_id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8 COMMENT '菜品操作表';
+DESC food_operation;
+DROP TABLE food_operation;
+
+
+CREATE TABLE `administrator`
+(
+  admin_id        INT AUTO_INCREMENT,
+  admin_name      VARCHAR(20) NOT NULL DEFAULT '' COMMENT '管理员姓名',
+  password        VARCHAR(20) NOT NULL DEFAULT '' COMMENT '密码',
+  role            VARCHAR(10) NOT NULL DEFAULT '' COMMENT '角色 包括系统管理员 员工',
+  phonenumber     VARCHAR(20) NOT NULL DEFAULT '' COMMENT '电话号码 登录户名',
+  manage_location VARCHAR(20) NOT NULL DEFAULT '' COMMENT '管理区域 系统管理员默认是全局',
+  validity        VARCHAR(10) NOT NULL DEFAULT 'YES' COMMENT '是否有效 YES表示有效 NO表示失效',
+  create_time     DATETIME    NOT NULL DEFAULT now() COMMENT '创建日期',
+  update_time     DATETIME    NOT NULL DEFAULT now() COMMENT '更新日期',
+  PRIMARY KEY (`admin_id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8 COMMENT '管理员表';
+DESC administrator;
+SELECT *
+FROM administrator;
+INSERT INTO administrator (admin_name, password, role, phonenumber, manage_location, validity)
+VALUES ('严老板', 'admin', '系统管理员', '15546699882', '全宇宙', 'YES');
+INSERT INTO administrator (admin_name, password, role, phonenumber, manage_location, validity)
+VALUES ('严员工', 'admin', '员工', '15086000489', '贵州贵阳', 'YES');
+
+
+CREATE TABLE `operation_records`
+(
+  operation_id   INT AUTO_INCREMENT,
+  admin_id       INT         NOT NULL COMMENT '操作管理员id',
+  food_id        INT         NOT NULL COMMENT '食品id',
+  operation_type VARCHAR(10) NOT NULL DEFAULT '' COMMENT '操作类型 入库 上架 下架 增加库存',
+  operation_time DATETIME    NOT NULL DEFAULT NOW() COMMENT '操作时间',
+  primary key (`operation_id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8 COMMENT '操作记录表';
+DESC operation_records;

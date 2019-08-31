@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.what2e.eatwhat.dao.FoodOperationMapper" >
+  <resultMap id="BaseResultMap" type="com.what2e.eatwhat.entity.FoodOperation" >
+    <id column="food_operation_id" property="foodOperationId" jdbcType="INTEGER" />
+    <result column="food_state_flag" property="foodStateFlag" jdbcType="INTEGER" />
+    <result column="oper" property="oper" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    food_operation_id, food_state_flag, oper
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.what2e.eatwhat.entity.FoodOperationExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from food_operation
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from food_operation
+    where food_operation_id = #{foodOperationId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from food_operation
+    where food_operation_id = #{foodOperationId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.what2e.eatwhat.entity.FoodOperationExample" >
+    delete from food_operation
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.what2e.eatwhat.entity.FoodOperation" >
+    insert into food_operation (food_operation_id, food_state_flag, oper
+      )
+    values (#{foodOperationId,jdbcType=INTEGER}, #{foodStateFlag,jdbcType=INTEGER}, #{oper,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.what2e.eatwhat.entity.FoodOperation" >
+    insert into food_operation
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="foodOperationId != null" >
+        food_operation_id,
+      </if>
+      <if test="foodStateFlag != null" >
+        food_state_flag,
+      </if>
+      <if test="oper != null" >
+        oper,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="foodOperationId != null" >
+        #{foodOperationId,jdbcType=INTEGER},
+      </if>
+      <if test="foodStateFlag != null" >
+        #{foodStateFlag,jdbcType=INTEGER},
+      </if>
+      <if test="oper != null" >
+        #{oper,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.what2e.eatwhat.entity.FoodOperationExample" resultType="java.lang.Integer" >
+    select count(*) from food_operation
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update food_operation
+    <set >
+      <if test="record.foodOperationId != null" >
+        food_operation_id = #{record.foodOperationId,jdbcType=INTEGER},
+      </if>
+      <if test="record.foodStateFlag != null" >
+        food_state_flag = #{record.foodStateFlag,jdbcType=INTEGER},
+      </if>
+      <if test="record.oper != null" >
+        oper = #{record.oper,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update food_operation
+    set food_operation_id = #{record.foodOperationId,jdbcType=INTEGER},
+      food_state_flag = #{record.foodStateFlag,jdbcType=INTEGER},
+      oper = #{record.oper,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.what2e.eatwhat.entity.FoodOperation" >
+    update food_operation
+    <set >
+      <if test="foodStateFlag != null" >
+        food_state_flag = #{foodStateFlag,jdbcType=INTEGER},
+      </if>
+      <if test="oper != null" >
+        oper = #{oper,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where food_operation_id = #{foodOperationId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.what2e.eatwhat.entity.FoodOperation" >
+    update food_operation
+    set food_state_flag = #{foodStateFlag,jdbcType=INTEGER},
+      oper = #{oper,jdbcType=VARCHAR}
+    where food_operation_id = #{foodOperationId,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,332 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.what2e.eatwhat.dao.FoodMapper" >
+  <resultMap id="BaseResultMap" type="com.what2e.eatwhat.entity.Food" >
+    <id column="food_id" property="foodId" jdbcType="INTEGER" />
+    <result column="food_name" property="foodName" jdbcType="VARCHAR" />
+    <result column="food_price" property="foodPrice" jdbcType="VARCHAR" />
+    <result column="food_picture" property="foodPicture" jdbcType="VARCHAR" />
+    <result column="inventory" property="inventory" jdbcType="INTEGER" />
+    <result column="food_location" property="foodLocation" jdbcType="VARCHAR" />
+    <result column="time_tips" property="timeTips" jdbcType="VARCHAR" />
+    <result column="food_desc" property="foodDesc" jdbcType="VARCHAR" />
+    <result column="food_state_flag" property="foodStateFlag" jdbcType="INTEGER" />
+    <result column="in_time" property="inTime" jdbcType="TIMESTAMP" />
+    <result column="put_time" property="putTime" jdbcType="TIMESTAMP" />
+    <result column="down_time" property="downTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    food_id, food_name, food_price, food_picture, inventory, food_location, time_tips, 
+    food_desc, food_state_flag, in_time, put_time, down_time
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.what2e.eatwhat.entity.FoodExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from food
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+
+  <select id="selectByPutTime" resultMap="BaseResultMap" parameterType="String" >
+    SELECT
+      *
+    FROM
+    food
+    WHERE put_time = #{putTime}
+  </select>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    from food
+    where food_id = #{foodId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from food
+    where food_id = #{foodId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.what2e.eatwhat.entity.FoodExample" >
+    delete from food
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.what2e.eatwhat.entity.Food" >
+    insert into food (food_id, food_name, food_price, 
+      food_picture, inventory, food_location, 
+      time_tips, food_desc, food_state_flag, 
+      in_time, put_time, down_time
+      )
+    values (#{foodId,jdbcType=INTEGER}, #{foodName,jdbcType=VARCHAR}, #{foodPrice,jdbcType=VARCHAR}, 
+      #{foodPicture,jdbcType=VARCHAR}, #{inventory,jdbcType=INTEGER}, #{foodLocation,jdbcType=VARCHAR}, 
+      #{timeTips,jdbcType=VARCHAR}, #{foodDesc,jdbcType=VARCHAR}, #{foodStateFlag,jdbcType=INTEGER}, 
+      #{inTime,jdbcType=TIMESTAMP}, #{putTime,jdbcType=TIMESTAMP}, #{downTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.what2e.eatwhat.entity.Food" >
+    insert into food
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="foodId != null" >
+        food_id,
+      </if>
+      <if test="foodName != null" >
+        food_name,
+      </if>
+      <if test="foodPrice != null" >
+        food_price,
+      </if>
+      <if test="foodPicture != null" >
+        food_picture,
+      </if>
+      <if test="inventory != null" >
+        inventory,
+      </if>
+      <if test="foodLocation != null" >
+        food_location,
+      </if>
+      <if test="timeTips != null" >
+        time_tips,
+      </if>
+      <if test="foodDesc != null" >
+        food_desc,
+      </if>
+      <if test="foodStateFlag != null" >
+        food_state_flag,
+      </if>
+      <if test="inTime != null" >
+        in_time,
+      </if>
+      <if test="putTime != null" >
+        put_time,
+      </if>
+      <if test="downTime != null" >
+        down_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="foodId != null" >
+        #{foodId,jdbcType=INTEGER},
+      </if>
+      <if test="foodName != null" >
+        #{foodName,jdbcType=VARCHAR},
+      </if>
+      <if test="foodPrice != null" >
+        #{foodPrice,jdbcType=VARCHAR},
+      </if>
+      <if test="foodPicture != null" >
+        #{foodPicture,jdbcType=VARCHAR},
+      </if>
+      <if test="inventory != null" >
+        #{inventory,jdbcType=INTEGER},
+      </if>
+      <if test="foodLocation != null" >
+        #{foodLocation,jdbcType=VARCHAR},
+      </if>
+      <if test="timeTips != null" >
+        #{timeTips,jdbcType=VARCHAR},
+      </if>
+      <if test="foodDesc != null" >
+        #{foodDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="foodStateFlag != null" >
+        #{foodStateFlag,jdbcType=INTEGER},
+      </if>
+      <if test="inTime != null" >
+        #{inTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="putTime != null" >
+        #{putTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="downTime != null" >
+        #{downTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.what2e.eatwhat.entity.FoodExample" resultType="java.lang.Integer" >
+    select count(*) from food
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update food
+    <set >
+      <if test="record.foodId != null" >
+        food_id = #{record.foodId,jdbcType=INTEGER},
+      </if>
+      <if test="record.foodName != null" >
+        food_name = #{record.foodName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.foodPrice != null" >
+        food_price = #{record.foodPrice,jdbcType=VARCHAR},
+      </if>
+      <if test="record.foodPicture != null" >
+        food_picture = #{record.foodPicture,jdbcType=VARCHAR},
+      </if>
+      <if test="record.inventory != null" >
+        inventory = #{record.inventory,jdbcType=INTEGER},
+      </if>
+      <if test="record.foodLocation != null" >
+        food_location = #{record.foodLocation,jdbcType=VARCHAR},
+      </if>
+      <if test="record.timeTips != null" >
+        time_tips = #{record.timeTips,jdbcType=VARCHAR},
+      </if>
+      <if test="record.foodDesc != null" >
+        food_desc = #{record.foodDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="record.foodStateFlag != null" >
+        food_state_flag = #{record.foodStateFlag,jdbcType=INTEGER},
+      </if>
+      <if test="record.inTime != null" >
+        in_time = #{record.inTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.putTime != null" >
+        put_time = #{record.putTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.downTime != null" >
+        down_time = #{record.downTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update food
+    set food_id = #{record.foodId,jdbcType=INTEGER},
+      food_name = #{record.foodName,jdbcType=VARCHAR},
+      food_price = #{record.foodPrice,jdbcType=VARCHAR},
+      food_picture = #{record.foodPicture,jdbcType=VARCHAR},
+      inventory = #{record.inventory,jdbcType=INTEGER},
+      food_location = #{record.foodLocation,jdbcType=VARCHAR},
+      time_tips = #{record.timeTips,jdbcType=VARCHAR},
+      food_desc = #{record.foodDesc,jdbcType=VARCHAR},
+      food_state_flag = #{record.foodStateFlag,jdbcType=INTEGER},
+      in_time = #{record.inTime,jdbcType=TIMESTAMP},
+      put_time = #{record.putTime,jdbcType=TIMESTAMP},
+      down_time = #{record.downTime,jdbcType=TIMESTAMP}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.what2e.eatwhat.entity.Food" >
+    update food
+    <set >
+      <if test="foodName != null" >
+        food_name = #{foodName,jdbcType=VARCHAR},
+      </if>
+      <if test="foodPrice != null" >
+        food_price = #{foodPrice,jdbcType=VARCHAR},
+      </if>
+      <if test="foodPicture != null" >
+        food_picture = #{foodPicture,jdbcType=VARCHAR},
+      </if>
+      <if test="inventory != null" >
+        inventory = #{inventory,jdbcType=INTEGER},
+      </if>
+      <if test="foodLocation != null" >
+        food_location = #{foodLocation,jdbcType=VARCHAR},
+      </if>
+      <if test="timeTips != null" >
+        time_tips = #{timeTips,jdbcType=VARCHAR},
+      </if>
+      <if test="foodDesc != null" >
+        food_desc = #{foodDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="foodStateFlag != null" >
+        food_state_flag = #{foodStateFlag,jdbcType=INTEGER},
+      </if>
+      <if test="inTime != null" >
+        in_time = #{inTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="putTime != null" >
+        put_time = #{putTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="downTime != null" >
+        down_time = #{downTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where food_id = #{foodId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.what2e.eatwhat.entity.Food" >
+    update food
+    set food_name = #{foodName,jdbcType=VARCHAR},
+      food_price = #{foodPrice,jdbcType=VARCHAR},
+      food_picture = #{foodPicture,jdbcType=VARCHAR},
+      inventory = #{inventory,jdbcType=INTEGER},
+      food_location = #{foodLocation,jdbcType=VARCHAR},
+      time_tips = #{timeTips,jdbcType=VARCHAR},
+      food_desc = #{foodDesc,jdbcType=VARCHAR},
+      food_state_flag = #{foodStateFlag,jdbcType=INTEGER},
+      in_time = #{inTime,jdbcType=TIMESTAMP},
+      put_time = #{putTime,jdbcType=TIMESTAMP},
+      down_time = #{downTime,jdbcType=TIMESTAMP}
+    where food_id = #{foodId,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.what2e.eatwhat.dao.InformationMapper" >
+  <resultMap id="BaseResultMap" type="com.what2e.eatwhat.entity.Information" >
+    <result column="info_id" property="infoId" jdbcType="INTEGER" />
+    <result column="info_picture" property="infoPicture" jdbcType="VARCHAR" />
+    <result column="info_url" property="infoUrl" jdbcType="VARCHAR" />
+    <result column="creat_time" property="creatTime" jdbcType="TIMESTAMP" />
+    <result column="issue_time" property="issueTime" jdbcType="TIMESTAMP" />
+    <result column="down_time" property="downTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    info_id, info_picture, info_url, creat_time, issue_time, down_time
+  </sql>
+
+  <select id="selectByIssueTime" resultMap="BaseResultMap" parameterType="String" >
+    select
+    *
+    FROM
+    information
+    where issue_time = #{issueTime}
+  </select>
+
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.what2e.eatwhat.entity.InformationExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from information
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <delete id="deleteByExample" parameterType="com.what2e.eatwhat.entity.InformationExample" >
+    delete from information
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.what2e.eatwhat.entity.Information" >
+    insert into information (info_id, info_picture, info_url, 
+      creat_time, issue_time, down_time
+      )
+    values (#{infoId,jdbcType=INTEGER}, #{infoPicture,jdbcType=VARCHAR}, #{infoUrl,jdbcType=VARCHAR}, 
+      #{creatTime,jdbcType=TIMESTAMP}, #{issueTime,jdbcType=TIMESTAMP}, #{downTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.what2e.eatwhat.entity.Information" >
+    insert into information
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="infoId != null" >
+        info_id,
+      </if>
+      <if test="infoPicture != null" >
+        info_picture,
+      </if>
+      <if test="infoUrl != null" >
+        info_url,
+      </if>
+      <if test="creatTime != null" >
+        creat_time,
+      </if>
+      <if test="issueTime != null" >
+        issue_time,
+      </if>
+      <if test="downTime != null" >
+        down_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="infoId != null" >
+        #{infoId,jdbcType=INTEGER},
+      </if>
+      <if test="infoPicture != null" >
+        #{infoPicture,jdbcType=VARCHAR},
+      </if>
+      <if test="infoUrl != null" >
+        #{infoUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="creatTime != null" >
+        #{creatTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="issueTime != null" >
+        #{issueTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="downTime != null" >
+        #{downTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.what2e.eatwhat.entity.InformationExample" resultType="java.lang.Integer" >
+    select count(*) from information
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update information
+    <set >
+      <if test="record.infoId != null" >
+        info_id = #{record.infoId,jdbcType=INTEGER},
+      </if>
+      <if test="record.infoPicture != null" >
+        info_picture = #{record.infoPicture,jdbcType=VARCHAR},
+      </if>
+      <if test="record.infoUrl != null" >
+        info_url = #{record.infoUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="record.creatTime != null" >
+        creat_time = #{record.creatTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.issueTime != null" >
+        issue_time = #{record.issueTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.downTime != null" >
+        down_time = #{record.downTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update information
+    set info_id = #{record.infoId,jdbcType=INTEGER},
+      info_picture = #{record.infoPicture,jdbcType=VARCHAR},
+      info_url = #{record.infoUrl,jdbcType=VARCHAR},
+      creat_time = #{record.creatTime,jdbcType=TIMESTAMP},
+      issue_time = #{record.issueTime,jdbcType=TIMESTAMP},
+      down_time = #{record.downTime,jdbcType=TIMESTAMP}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+</mapper>
